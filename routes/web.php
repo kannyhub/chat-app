@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RoomController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
@@ -33,10 +34,14 @@ Route::middleware(['guest'])->group(function() {
 // ==================USER ROUTES===============================
 Route::middleware(['auth'])->group(function() {
     Route::group(['prefix' => 'user', 'as' => 'user.'],function() {
-        Route::get('/',[UserController::class,'index'])->name('all');
+        Route::get('/all',[UserController::class,'index'])->name('all');
         Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
     });
 });
+
+Route::get('/',[RoomController::class,function() {
+    return view('room.index');
+}])->name('rooms');
 
 // Route::get(uri:'/',action:'App\Http\Controllers\PusherController@index');
 // Route::post(uri:'/broadcast',action:'App\Http\Controllers\PusherController@broadcast');
