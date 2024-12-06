@@ -2,11 +2,6 @@
 @section('content')
 <div class="container">
     <h3 class="mt-3">Login</h3>
-    @error('message')
-    <div class="alert alert-danger" role="alert">
-        {{ $message }}
-    </div>
-    @enderror
     <form action="{{route('authenticate')}}" method="post">
         @csrf
         <div class="mb-3">

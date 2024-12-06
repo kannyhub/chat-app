@@ -37,11 +37,18 @@ Route::middleware(['auth'])->group(function() {
         Route::get('/all',[UserController::class,'index'])->name('all');
         Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
     });
+
+    Route::group(['prefix' => 'room', 'as' => 'room.'],function() {
+        Route::get('/{id}',[RoomController::class,'view'])->where('id','[0-9]+')->name('view');
+        Route::get('/create',[RoomController::class,function() {
+            return view('room.create');
+        }])->name('create');
+        Route::post('/store',[RoomController::class,'store'])->name('store');
+    });
 });
 
-Route::get('/',[RoomController::class,function() {
-    return view('room.index');
-}])->name('rooms');
+
+Route::get('/',[RoomController::class,'index'])->name('rooms');
 
 // Route::get(uri:'/',action:'App\Http\Controllers\PusherController@index');
 // Route::post(uri:'/broadcast',action:'App\Http\Controllers\PusherController@broadcast');

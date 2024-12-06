@@ -7,11 +7,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
+use App\Traits\DatabaseOperationsTrait;
 
 class AuthController extends Controller
 {
+    use DatabaseOperationsTrait;
     // Handle User Registration
-    public function register(Request $request)
+    public function register(Request $request,User $user)
     {
         $request->validate([
             'name' => 'required|string|max:255',
@@ -19,7 +21,7 @@ class AuthController extends Controller
             'password' => 'required|string|min:5',
         ]);
 
-        User::create([
+        $this->storeRecord($user,[
             'name' => $request->name,
             'email' => $request->email,
             'role' => 1,
@@ -42,8 +44,8 @@ class AuthController extends Controller
         if (Auth::attempt($request->only('email', 'password'))) {
             return redirect()->route('user.all');
         }
-        return back()->withErrors([
-            'message' => 'Invalid credentials.',
+        return back()->with([
+            'error' => 'Invalid credentials.',
         ]);
     }
 
