@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+{{-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -30,6 +30,7 @@
     
         var channel = pusher.subscribe('public');
         channel.bind('chat', function(data) {
+            console.log('kp messafe fssdfa');
           alert(JSON.stringify(data));
         });
 
@@ -53,4 +54,4 @@
         })
       </script>
 </body>
-</html>
+</html> --}}

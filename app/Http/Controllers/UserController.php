@@ -14,4 +14,9 @@ class UserController extends Controller
         $users = $this->getRecords($user);
         return view('user.index',compact('users'));
     }
+
+    public function view(User $user,$id) {
+        return user::with('rooms')->find($id);
+        // $user = $this->
+    }
 }

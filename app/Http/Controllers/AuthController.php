@@ -24,14 +24,19 @@ class AuthController extends Controller
         $this->storeRecord($user,[
             'name' => $request->name,
             'email' => $request->email,
-            'role' => 1,
+            'role' => 2,
             'password' => Hash::make($request->password),
         ]);
 
         // Optionally log in the user after signup
-        Auth::attempt($request->only('email', 'password'));
-
-        return redirect()->route('user.all');
+        if (Auth::attempt($request->only('email', 'password'))) {
+            if(Auth::user()->role == 1) {
+                return redirect()->route('user.all');
+            } else {
+                return redirect()->route('rooms');
+            }
+            
+        }
     }
 
     // Handle User Login
@@ -42,7 +47,12 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
         if (Auth::attempt($request->only('email', 'password'))) {
-            return redirect()->route('user.all');
+            if(Auth::user()->role == 1) {
+                return redirect()->route('user.all');
+            } else {
+                return redirect()->route('rooms');
+            }
+            
         }
         return back()->with([
             'error' => 'Invalid credentials.',

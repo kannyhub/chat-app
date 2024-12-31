@@ -5,6 +5,7 @@ use App\Http\Controllers\RoomController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\PusherController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,7 +35,10 @@ Route::middleware(['guest'])->group(function() {
 // ==================USER ROUTES===============================
 Route::middleware(['auth'])->group(function() {
     Route::group(['prefix' => 'user', 'as' => 'user.'],function() {
-        Route::get('/all',[UserController::class,'index'])->name('all');
+            Route::middleware((['isAdmin']))->group(function() {
+                Route::get('/all',[UserController::class,'index'])->name('all');
+                Route::get('{id}',[UserController::class,'view'])->where('id','[0-9]+')->name('view');
+            });
         Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
     });
 
@@ -45,11 +49,13 @@ Route::middleware(['auth'])->group(function() {
         }])->name('create');
         Route::post('/store',[RoomController::class,'store'])->name('store');
     });
+
+    Route::post('/broadcast',[PusherController::class,'broadcast']);
 });
 
 
 Route::get('/',[RoomController::class,'index'])->name('rooms');
 
-// Route::get(uri:'/',action:'App\Http\Controllers\PusherController@index');
+// Route::get(uri:'/test',action:'App\Http\Controllers\PusherController@index');
 // Route::post(uri:'/broadcast',action:'App\Http\Controllers\PusherController@broadcast');
 // Route::post(uri:'/receive',action:'App\Http\Controllers\PusherController@receive');

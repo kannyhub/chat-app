@@ -43,7 +43,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function getUsers() {
-        return $this::all();
+    public function rooms() {
+        return $this->hasMany(Room::class);
     }
 }

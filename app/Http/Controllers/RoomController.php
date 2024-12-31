@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\Room;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Traits\DatabaseOperationsTrait;
-use Exception;
 
 class RoomController extends Controller
 {
@@ -16,13 +17,13 @@ class RoomController extends Controller
     }
 
     public function view(Room $room,$id) {
-        $room = $this->getRecord($room,$id);
+        $room = Room::find($id); 
         if (!empty($room)) {
-            dd($room);
-        } else {
-            abort(404);
+            $room->attendee()->syncWithoutDetaching(Auth::user()->id);
+            $room = Room::with('admin')->with('attendee')->find($id);
+            return view('room.room',compact('room'));   
         }
-        
+        abort(404);
     }
 
     public function store(Request $request,Room $room) {
@@ -30,9 +31,12 @@ class RoomController extends Controller
             'name'      =>      'required|string|max:255',
             'limit'     =>      'required|integer|max:10|min:2'
         ]);
-        
+
+        $data = $request->only('name','limit');
+        $data = array_merge($data,['user_id' => Auth::user()->id]);
+
         try {
-            if ($this->storeRecord($room,$request->only('name','limit'))) {
+            if ($this->storeRecord($room,$data)) {
                 return redirect()->route('rooms')->with(['success' => 'Room Created Successfully']);
             }
         } catch (Exception $e) {

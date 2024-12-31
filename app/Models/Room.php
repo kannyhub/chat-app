@@ -9,6 +9,14 @@ class Room extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name','limit'];
+    protected $guarded = [];
+
+    public function admin() {
+        return $this->belongsTo(User::class,'user_id','id');
+    }
+
+    public function attendee() {
+        return $this->belongsToMany(User::class,'room_user');
+    }
    
 }

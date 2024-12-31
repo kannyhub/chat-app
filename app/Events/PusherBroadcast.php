@@ -14,14 +14,18 @@ class PusherBroadcast implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public string $message;
+    public $message;
+    public $sender;
+    public $room;
 
     /**
      * Create a new event instance.
      */
-    public function __construct($message)
+    public function __construct($message,$sender,$room)
     {
         $this->message = $message;
+        $this->sender = $sender;
+        $this->room = $room;
     }
 
     /**
